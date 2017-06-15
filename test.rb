@@ -4,10 +4,9 @@ def start_webrick(port: 8080)
   end
 end
 
-def start_thin(port: 8080, conns: 20)
+def start_unicorn(port: 8080)
   fork do
-    # https://github.com/macournoyer/thin/blob/master/lib/thin/runner.rb
-    exec "bundle exec thin -R app.ru -a 127.0.0.1 -p #{port} --max-conns #{conns} start"
+    exec "bundle exec unicorn -p #{port} -c unicorn.rb"
   end
 end
 
@@ -20,27 +19,44 @@ def kill_server(pid)
   Process.kill("KILL", pid)
 end
 
-
-
-pid = start_webrick
-sleep(0.5)
+pid = start_unicorn
+sleep(1)
 
 require "net/http"
 require "uri"
 
+def request(url, open_timeout: nil, read_timeout: nil)
+  uri = URI.parse(url)
+  Net::HTTP.start(uri.host, uri.port) do |http|
+    http.open_timeout = open_timeout if open_timeout
+    http.read_timeout = read_timeout if read_timeout
+    puts "request: #{uri.request_uri}"
+    http.request(Net::HTTP::Get.new(uri.request_uri))
+  end
+end
+
+def async_request(*args)
+  fork do
+    begin
+      request(*args)
+    rescue Exception
+      # silence exception
+    end
+  end
+end
+
+a = async_request("http://localhost:8080/medium/async")
+sleep(0.1)
+
+begin_at = Time.now
 begin
-  uri = URI.parse("http://localhost:8080/")
-  http = Net::HTTP.new(uri.host, uri.port)
-  # http.timeout there is no timeout setting
-  http.open_timeout = 1 # seconds
-  http.read_timeout = 1 # seconds
-
-  response = http.request(Net::HTTP::Get.new(uri.request_uri))
-
-  p response
-rescue Exception
-  raise
+  request("http://localhost:8080/medium", read_timeout: 1)
+  puts "Ok ellapsed: #{Time.now - begin_at}"
+rescue Exception => e
+  puts "#{e.class.name} ellapsed: #{Time.now - begin_at}"
 ensure
+  stop_server(pid)
   kill_server(pid)
+  # kill_server(a)
   sleep(1)
 end
