@@ -5,3 +5,5 @@ gem "unicorn"
 gem "unicorn-worker-killer"
 gem "rack"
 gem "rack-timeout"
+
+gem "excon"

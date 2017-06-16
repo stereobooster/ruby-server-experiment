@@ -2,7 +2,7 @@ Small experiment with web servers and timeouts
 
 https://shopifyengineering.myshopify.com/blogs/engineering/17489012-what-does-your-webserver-do-when-a-user-hits-refresh
 
-### Network experiments
+### net/http experiments
 
 - Default network timeout is 120s, it corresponds to read timeout 60s
 - `open_timeout: 60, read_timeout: 1` => `Net::ReadTimeout` in ~ 2s
@@ -17,6 +17,7 @@ Other http clients:
 - https://github.com/toland/patron (based on libcurl)
 - https://github.com/typhoeus/typhoeus (based on libcurl)
 - https://github.com/nahi/httpclient
+- https://github.com/igrigorik/em-http-request
 
 ### Unicorn experiments
 

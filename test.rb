@@ -37,6 +37,13 @@ def request(url, open_timeout: nil, read_timeout: nil)
   end
 end
 
+require 'excon'
+
+def e_request(url, options = nil)
+  # connect_timeout: nil, read_timeout: nil, write_timeout: nil
+  Excon.get(url, options)
+end
+
 def async_request(*args)
   fork do
     begin
@@ -47,12 +54,22 @@ def async_request(*args)
   end
 end
 
-# async_request("http://localhost:8080/medium/async")
-# sleep(0.1)
+def async_e_request(*args)
+  fork do
+    begin
+      request(*args)
+    rescue Exception
+      # silence exception
+    end
+  end
+end
+
+async_e_request("http://localhost:8080/medium/async")
+sleep(0.1)
 
 begin_at = Time.now
 begin
-  request("http://localhost:8080/medium", read_timeout: 1)
+  e_request("http://localhost:8080/medium", read_timeout: 1)
   puts "Ok ellapsed: #{Time.now - begin_at}"
 rescue Exception => e
   puts "#{e.class.name} ellapsed: #{Time.now - begin_at}"
