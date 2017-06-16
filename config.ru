@@ -12,7 +12,6 @@
 #     [504, {"Content-Type" => "text/html"}, ["Gateway Timeout"]]
 #   end
 # end
-
 # use Rack::TimeoutHelper
 
 # # Call as early as possible so rack-timeout runs before all other middleware.
@@ -30,13 +29,17 @@
 class TestServer
   def call(env)
     req = Rack::Request.new(env)
-    # puts "#{req.path_info} start"
+    puts "#{req.path_info} start"
     case req.path_info
     when /long/
-      sleep(600)
+      sleep(10)
       [200, {"Content-Type" => "text/html"}, ["Hello World!"]]
     when /medium/
       sleep(5)
+      # puts "#{req.path_info} end"
+      [200, {"Content-Type" => "text/html"}, ["Hello World!"]]
+    when /small/
+      sleep(2)
       # puts "#{req.path_info} end"
       [200, {"Content-Type" => "text/html"}, ["Hello World!"]]
     else

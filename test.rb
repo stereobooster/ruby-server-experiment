@@ -1,81 +1,26 @@
-def start_webrick(port: 8080)
-  fork do
-    exec "ruby sevrver_webrick.rb #{port}"
-  end
-end
-
-def start_unicorn(port: 8080)
-  fork do
-    # https://bogomips.org/unicorn/unicorn_1.html
-    exec "bundle exec unicorn -p #{port} -c unicorn.rb -w"
-  end
-end
-
-# https://apidock.com/ruby/Process/kill/class
-# https://bogomips.org/unicorn/SIGNALS.html
-def stop_server(pid)
-  Process.kill("TERM", pid)
-end
-
-def kill_server(pid)
-  Process.kill("KILL", pid)
-end
+require_relative 'tools'
 
 pid = start_unicorn
-sleep(1)
+sleep(1) # wait to make sure server started
 
-require "net/http"
-require "uri"
-
-def request(url, open_timeout: nil, read_timeout: nil)
-  uri = URI.parse(url)
-  Net::HTTP.start(uri.host, uri.port) do |http|
-    http.open_timeout = open_timeout if open_timeout
-    http.read_timeout = read_timeout if read_timeout
-    puts "request: #{uri.request_uri}"
-    http.request(Net::HTTP::Get.new(uri.request_uri))
-  end
-end
-
-require 'excon'
-
-def e_request(url, options = nil)
-  # connect_timeout: nil, read_timeout: nil, write_timeout: nil
-  Excon.get(url, options)
-end
-
-def async_request(*args)
-  fork do
-    begin
-      request(*args)
-    rescue Exception
-      # silence exception
-    end
-  end
-end
-
-def async_e_request(*args)
-  fork do
-    begin
-      request(*args)
-    rescue Exception
-      # silence exception
-    end
-  end
-end
-
-async_e_request("http://localhost:8080/medium/async")
+async_e_request("http://localhost:8080/long/async")
+async_e_request("http://localhost:8080/long/async")
 sleep(0.1)
 
 begin_at = Time.now
 begin
-  e_request("http://localhost:8080/medium", read_timeout: 1)
+  # e_request_timeout("http://localhost:8080/small/timeout", timeout: 1)
+  e_request("http://localhost:8080/long/timeout", read_timeout: 1)
+  # curl("http://localhost:8080/small/timeout", read_timeout: 1)
+  # curl_fork("http://localhost:8080/small/timeout", read_timeout: 1)
   puts "Ok ellapsed: #{Time.now - begin_at}"
 rescue Exception => e
   puts "#{e.class.name} ellapsed: #{Time.now - begin_at}"
+  raise e
 ensure
+  # wait to get all logs from server
+  sleep(10)
   stop_server(pid)
+  sleep(10)
   kill_server(pid)
-  # kill_server(a)
-  sleep(1)
 end
