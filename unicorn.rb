@@ -1,8 +1,10 @@
+# logger Logger.new($stdout)
+
 worker_processes Integer(ENV["WEB_CONCURRENCY"] || 1)
 # timeout 5
 preload_app true
 # https://github.com/defunkt/unicorn/commit/5c700fc2cf398848ddcf71a2aa3f0f2a6563e87b
-# check_client_connection true
+check_client_connection true
 
 before_fork do |server, worker|
   Signal.trap 'TERM' do

@@ -6,11 +6,13 @@ end
 
 def start_unicorn(port: 8080)
   fork do
-    exec "bundle exec unicorn -p #{port} -c unicorn.rb"
+    # https://bogomips.org/unicorn/unicorn_1.html
+    exec "bundle exec unicorn -p #{port} -c unicorn.rb -w"
   end
 end
 
 # https://apidock.com/ruby/Process/kill/class
+# https://bogomips.org/unicorn/SIGNALS.html
 def stop_server(pid)
   Process.kill("TERM", pid)
 end
@@ -45,8 +47,8 @@ def async_request(*args)
   end
 end
 
-a = async_request("http://localhost:8080/medium/async")
-sleep(0.1)
+# async_request("http://localhost:8080/medium/async")
+# sleep(0.1)
 
 begin_at = Time.now
 begin

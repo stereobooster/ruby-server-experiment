@@ -19,6 +19,14 @@
 # # Setting service_timeout is recommended. If omitted, defaults to 15 seconds.
 # use Rack::Timeout, service_timeout: 5
 
+# module Rack
+#   class Logger
+#     def call(env)
+#       @app.call(env)
+#     end
+#   end
+# end
+
 class TestServer
   def call(env)
     req = Rack::Request.new(env)

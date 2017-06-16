@@ -9,6 +9,14 @@ https://shopifyengineering.myshopify.com/blogs/engineering/17489012-what-does-yo
 - `open_timeout: 5, read_timeout: 10` => `Net::ReadTimeout` in ~ 20s
 - `read_timeout: 1, open_timeout: 0.001` => `Net::OpenTimeout` in ~ 0.002s
 - `request("http://not-existing/")` => `SocketError` in ~ 0.002s
+- [Net::HTTP retries idempotent requests once after a timeout, but its not configurable](https://bugs.ruby-lang.org/issues/10674). It means that [httparty](https://github.com/jnunemaker/httparty) and [Faraday with net_http adapter affected](https://github.com/lostisland/faraday/blob/f994b054f9c4eb3e1200f8fb4f8da89a21d3d346/lib/faraday/adapter.rb)
+
+Other http clients:
+- https://github.com/excon/excon
+- https://github.com/httprb/http
+- https://github.com/toland/patron (based on libcurl)
+- https://github.com/typhoeus/typhoeus (based on libcurl)
+- https://github.com/nahi/httpclient
 
 ### Unicorn experiments
 
