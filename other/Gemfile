@@ -6,4 +6,4 @@ gem "unicorn-worker-killer"
 gem "rack"
 gem "rack-timeout"
 
-gem "excon"
+gem "excon", git: "https://github.com/stereobooster/excon.git", branch: "close-socket"

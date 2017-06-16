@@ -1,7 +1,13 @@
+GIT
+  remote: https://github.com/stereobooster/excon.git
+  revision: 5df4aacb69324f581bbabb2fde5a336e422268fa
+  branch: close-socket
+  specs:
+    excon (0.57.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
-    excon (0.57.0)
     get_process_mem (0.2.1)
     kgio (2.11.0)
     rack (2.0.3)
@@ -18,7 +24,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  excon
+  excon!
   rack
   rack-timeout
   unicorn
