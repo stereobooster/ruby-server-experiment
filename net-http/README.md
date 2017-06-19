@@ -1,5 +1,7 @@
 # Net::HTTP bug
 
+Fix: https://github.com/ruby/ruby/pull/1654/files
+
 [Net::HTTP retries idempotent requests once after a timeout, but its not configurable](https://bugs.ruby-lang.org/issues/10674). It means that [httparty](https://github.com/jnunemaker/httparty) and [Faraday with net_http adapter](https://github.com/lostisland/faraday/blob/f994b054f9c4eb3e1200f8fb4f8da89a21d3d346/lib/faraday/adapter.rb) are affected.
 
 - Default network timeout is 120s, it corresponds to read timeout 60s
