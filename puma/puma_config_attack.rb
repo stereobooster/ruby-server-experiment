@@ -1,9 +1,11 @@
 #!/usr/bin/env puma
 # https://github.com/puma/puma/blob/master/examples/config.rb
 
-rackup 'config.ru'
+rackup 'config_rack_attack.ru'
 
-threads 1, 1
+# stdout_redirect 'puma.log', 'puma.log', true
+
+threads 100, 100
 
 bind 'tcp://0.0.0.0:8080'
 

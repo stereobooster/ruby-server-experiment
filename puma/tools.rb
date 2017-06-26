@@ -4,6 +4,12 @@ def start_puma()
   end
 end
 
+def start_puma_attack()
+  fork do
+    exec "bundle exec puma -C puma_config_attack.rb"
+  end
+end
+
 # https://apidock.com/ruby/Process/kill/class
 # https://bogomips.org/unicorn/SIGNALS.html
 def stop_server(pid)
@@ -15,6 +21,7 @@ def kill_server(pid)
 end
 
 require "net/http"
+require_relative "net_http_patch"
 require "uri"
 
 def request(url, open_timeout: nil, read_timeout: nil)

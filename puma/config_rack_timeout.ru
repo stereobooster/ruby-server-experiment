@@ -1,3 +1,18 @@
+class RackExceptionCatcher
+  def initialize(app)
+    @app = app
+  end
+  def call(env)
+    @app.call(env)
+  rescue Rack::Timeout::RequestTimeoutError
+    # TODO: log timeout
+    [504, {"Content-Type" => "text/html"}, ["Gateway Timeout"]]
+  end
+end
+use RackExceptionCatcher
+require "rack-timeout"
+use Rack::Timeout, service_timeout: 5
+
 class TestServer
   def call(env)
     req = Rack::Request.new(env)

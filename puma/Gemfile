@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 source "https://rubygems.org"
 
-gem "puma", path: File.expand_path("#{__FILE__}../../../../puma")
+gem "puma"
 gem "rack"
+gem "rack-timeout"
+gem 'rack-attack'
+gem 'redis'
+gem 'redis-activesupport'
