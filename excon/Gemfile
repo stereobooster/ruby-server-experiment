@@ -1,0 +1,4 @@
+# frozen_string_literal: true
+source "https://rubygems.org"
+
+gem "excon"#, git: "https://github.com/stereobooster/excon.git", branch: "close-socket"
