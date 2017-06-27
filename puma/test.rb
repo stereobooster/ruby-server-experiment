@@ -9,7 +9,7 @@ begin
   puts "client: Ok ellapsed: #{Time.now - begin_at}"
 rescue Exception => e
   puts "client: #{e.class.name} ellapsed: #{Time.now - begin_at}"
-  # raise e
+  raise e
 ensure
   # wait to get all logs from server
   sleep(10)

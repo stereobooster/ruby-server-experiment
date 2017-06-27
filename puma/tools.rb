@@ -29,6 +29,7 @@ def request(url, open_timeout: nil, read_timeout: nil)
   Net::HTTP.start(uri.host, uri.port) do |http|
     http.open_timeout = open_timeout if open_timeout
     http.read_timeout = read_timeout if read_timeout
+    http.max_retries = 0
     puts "request: #{uri.request_uri}"
     http.request(Net::HTTP::Get.new(uri.request_uri))
   end
