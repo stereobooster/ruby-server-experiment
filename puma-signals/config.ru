@@ -1,6 +1,8 @@
 require 'dotenv'
 require 'logger'
 
+p "loaded"
+
 class TestServer
   class << self
     attr_accessor :logger
