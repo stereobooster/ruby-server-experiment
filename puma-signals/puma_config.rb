@@ -3,19 +3,38 @@
 
 rackup 'config.ru'
 
+# as much as your server can take
 threads_count = 1
 threads threads_count, threads_count
 
+# required for HUP signal
 stdout_redirect "puma.log", "puma.log", true
 
+# prefer tcp socket over unix, because it can prevent disconected clients to be processed
 bind 'tcp://0.0.0.0:8080'
 
-# worker_timeout 5
-workers 2
+workers 2 # number of cores
 
-# before_fork do
-#   p "before_fork"
-# end
+before_fork do |server, worker|
+  ActiveRecord::Base.connection.disconnect! if defined?(ActiveRecord::Base)
+end
+
+after_worker_fork do |server, worker|
+  ActiveRecord::Base.establish_connection if defined?(ActiveRecord::Base)
+end
+
+# required for zero-downtime restart
+prune_bundler
+
+require 'dotenv'
+
+# this will be triggered only for USR2
+on_restart do
+  # required for symlink deployment, like to `/current` folder
+  ENV["BUNDLE_GEMFILE"] = "#{Dir.pwd}/Gemfile"
+  # reloading env variables
+  Dotenv.overload("#{Dir.pwd}/example.env")
+end
 
 # on_worker_boot do |worker|
 #   p "on_worker_boot", worker
@@ -27,10 +46,6 @@ workers 2
 
 # on_worker_fork do |worker|
 #   p "on_worker_fork", worker
-# end
-
-# after_worker_fork do |worker|
-#   p "after_worker_fork", worker
 # end
 
 # lowlevel_error_handler do |e|
