@@ -132,3 +132,29 @@ test1
 
 Works the same as first scenario
 
+## Simplified patch
+
+Original @grosser's patch
+
+```ruby
+require 'bundler/setup'
+Puma::Runner.prepend(Module.new do
+  def before_restart
+    puts "before_restart\n"
+    ENV.replace(Bundler.clean_env)
+    super
+  end
+end)
+```
+
+Simplified patch (works the same)
+
+```ruby
+require 'bundler/setup'
+# this will be triggered only for USR2
+on_restart do
+  puts "on_restart\n"
+  ENV.replace(Bundler.clean_env)
+end
+```
+
