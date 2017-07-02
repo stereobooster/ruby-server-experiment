@@ -2,11 +2,13 @@
 # https://github.com/puma/puma/blob/master/examples/config.rb
 
 require 'bundler/setup'
-# this will be triggered only for USR2
-on_restart do
-  puts "on_restart\n"
-  ENV.replace(Bundler.clean_env)
-end
+Puma::Runner.prepend(Module.new do
+  def before_restart
+    puts "before_restart\n"
+    ENV.replace(Bundler.clean_env)
+    super
+  end
+end)
 
 rackup "config.ru"
 bind "tcp://0.0.0.0:8080"

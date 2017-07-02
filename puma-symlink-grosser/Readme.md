@@ -158,3 +158,48 @@ on_restart do
 end
 ```
 
+## USR1
+
+- old version of puma config
+- ok, new code
+- old version of env variable
+- old version of Puma
+- old version of gem https://github.com/puma/puma/pull/1315
+
+<details>
+
+```
+=== puma startup: 2017-07-02 19:27:51 +0000 ===
+=== puma startup: 2017-07-02 19:27:51 +0000 ===
+application is loaded 1 config.ru
+test1
+3.9.0
+1.12.0
+application is loaded 1 config.ru
+[781] - Worker 1 (pid: 789) booted, phase: 0
+test1
+3.9.0
+1.12.0
+[781] - Worker 0 (pid: 785) booted, phase: 0
+[781] - Starting phased worker restart, phase: 1
+[781] + Changing to /vagrant/ruby-server-experiment/puma-symlink-grosser/current
+[781] - Stopping 785 for phased upgrade...
+[781] - TERM sent to 785...
+application is loaded 2 config.ru
+test1
+3.9.0
+1.12.0
+[781] - Worker 0 (pid: 827) booted, phase: 1
+[781] - Stopping 789 for phased upgrade...
+[781] - TERM sent to 789...
+application is loaded 2 config.ru
+test1
+3.9.0
+1.12.0
+[781] - Worker 1 (pid: 837) booted, phase: 1
+[781] Early termination of worker
+[837] ! Detected parent died, dying
+[827] ! Detected parent died, dying
+```
+</details>
+
