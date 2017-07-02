@@ -1,8 +1,65 @@
-# Simulation of symlink deployment
+# Current best practices
+
+## Zero-downtime update
+
+### USR1
+
+No pause at all - restarts workers one by one.
+
+```ruby
+workers N     # at least 2 for rolling restart
+prune_bundler # important bit
+```
+
+On restart you get:
+
+- old version of puma config
+- new code
+- old version of env variable https://github.com/puma/puma/issues/1351
+- old version of Puma
+- new version of gem
+
+### USR2
+
+Pause while loads new Ruby code and gems, but doesn't drop socket connection.
+
+```
+# see https://github.com/puma/puma/pull/1282
+# do not use prune_bundler with this patch
+require 'bundler/setup'
+on_restart do
+  ENV.replace(Bundler.clean_env)
+end
+
+# also consider to use something like bootsnap
+preload_app!
+```
+
+After restart you get:
+
+- new version of puma config
+- new code
+- old version of env variable
+- new version of Puma
+- new version of gem
+
+See also: [puma-symlink-grosser](https://github.com/stereobooster/ruby-server-experiment/tree/master/puma-symlink-grosser)
+
+## General advice
+
+Use TCP socket if you are on Linux and behind reverse proxy (nginx or similar). It will work like [unicor `check_client_connection: true`](https://bogomips.org/unicorn/Unicorn/Configurator.html).
+
+You probably want to use something like `dotenv` to reload env variables. Still figuring out best practice here.
+
+Use init script to start server.
+
+Use process monitor for server (do not rely on `--daemon` option).
+
+# Experiments: simulation of symlink deployment
 
 TODO:
- - [ ] example with process monitor
  - [ ] example with error in new deployment
+ - [ ] example with process monitor
  - [ ] example with vendored deployment
 
 ## USR1 - rolling reload
