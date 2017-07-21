@@ -1,0 +1,23 @@
+GIT
+  remote: git@github.com:plum-umd/rdl.git
+  revision: 8bc4ef3290d431cf3e02626d84a6a619b754a50f
+  branch: dev
+  specs:
+    rdl (2.1.0)
+      parser (~> 2.3, >= 2.3.1.4)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    ast (2.3.0)
+    parser (2.4.0.0)
+      ast (~> 2.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rdl!
+
+BUNDLED WITH
+   1.15.2

@@ -1,0 +1,4 @@
+# A sample Gemfile
+source "https://rubygems.org"
+
+gem "rdl", git: "git@github.com:plum-umd/rdl.git", branch: "dev"
